@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1013984613825",
+    "project_id": "epal-a0cc0",
+    "storage_bucket": "epal-a0cc0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1013984613825:android:172b5a1d637a1bb3244b40",
+        "android_client_info": {
+          "package_name": "com.example.epal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1013984613825-tp4sc1vchdchvootiaj8q6o6ljulkge0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.epal",
+            "certificate_hash": "0a1c4c2195d7d8953c8a7d2d359839beef39a095"
+          }
+        },
+        {
+          "client_id": "1013984613825-5luko6o44t5hs15vmeie7pn03o0lqv0a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHpyXUrMGEZGCVpQnVW_Jij7AI-lFXous"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1013984613825-5luko6o44t5hs15vmeie7pn03o0lqv0a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
