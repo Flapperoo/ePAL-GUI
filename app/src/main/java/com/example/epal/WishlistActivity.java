@@ -109,8 +109,8 @@ public class WishlistActivity extends AppCompatActivity {
         final AlertDialog dialog = myDialog.create();
         dialog.setCancelable(false);
 
-        final EditText linkText = myview.findViewById(R.id.linkText);
-        final EditText printTxt = myview.findViewById(R.id.linkText);
+        final EditText linkTxt = myview.findViewById(R.id.linkTxt);
+        final EditText priceTxt = myview.findViewById(R.id.priceTxt);
         final Button cancelBtn = myview.findViewById(R.id.cancelBtn);
         final Button saveBtn = myview.findViewById(R.id.saveBtn);
 
@@ -118,15 +118,15 @@ public class WishlistActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String wishlistLink = linkText.getText().toString();
-                String itemAmount = printTxt.getText().toString();
+                String wishlistLink = linkTxt.getText().toString();
+                String itemAmount = priceTxt.getText().toString();
 
                 if(TextUtils.isEmpty(wishlistLink)){
-                    linkText.setError("Please input link:");
+                    linkTxt.setError("Please input link:");
                     return;
                 }
-                if(TextUtils.isEmpty(wishlistLink)){
-                    printTxt.setError("Please input link:");
+                if(TextUtils.isEmpty(itemAmount)){
+                    priceTxt.setError("Please input amount:");
                     return;
                 }
 
@@ -145,18 +145,20 @@ public class WishlistActivity extends AppCompatActivity {
                     DateTime now = new DateTime();
                     Months months = Months.monthsBetween(epoch, now);
 
-                    Data data = new Data(itemAmount, date, id, null, wishlistLink,months.getMonths());
+                    Data data = new Data(wishlistLink, date, id, null, Integer.parseInt(itemAmount), months.getMonths());
                     wishlistRef.child(id).setValue(data).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()){
-                                Toast.makeText(WishlistActivity.this, "Item added successfully to wishlist", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(WishlistActivity.this, "Wishlist Item is Added Successfully", Toast.LENGTH_SHORT).show();
                             }else{
                                 Toast.makeText(WishlistActivity.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
                             }
+
                             loader.dismiss();
                         }
                     });
+
                 }
                 dialog.dismiss();
 

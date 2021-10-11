@@ -35,7 +35,7 @@
                 <TableRow>
 
                     <TextView
-                        android:id="@+id/peso"
+                        android:id="@+id/linkView"
                         android:layout_width="181dp"
                         android:layout_height="64dp"
                         android:layout_weight="1"
@@ -46,7 +46,7 @@
                         android:textStyle="bold" />
 
                     <EditText
-                        android:id="@+id/linkText"
+                        android:id="@+id/linkTxt"
                         android:layout_width="242dp"
                         android:layout_height="wrap_content"
                         android:ems="10"
