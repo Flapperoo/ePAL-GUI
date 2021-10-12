@@ -266,8 +266,6 @@ public class WishlistActivity extends AppCompatActivity {
         final EditText mAmount = mView.findViewById(R.id.amount);
         final EditText mNotes = mView.findViewById(R.id.note);
 
-        mAmount.setVisibility(View.GONE);
-
         mItem.setText(item);
         mAmount.setText(String.valueOf(amount));
         mAmount.setSelection(String.valueOf(amount).length());
