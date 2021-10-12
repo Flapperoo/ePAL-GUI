@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.text.Layout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,6 +50,9 @@ public class WishlistActivity extends AppCompatActivity {
     private DatabaseReference wishlistRef;
     private FirebaseAuth mAuth;
     private ProgressDialog loader;
+    private String post_key = "";
+    private String item = "";
+    private int amount = 0;
 
 
     @Override
@@ -184,12 +188,22 @@ public class WishlistActivity extends AppCompatActivity {
         FirebaseRecyclerAdapter<Data, MyViewHolder> adapter = new FirebaseRecyclerAdapter<Data, MyViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull MyViewHolder holder, int position, @NonNull Data model) {
-                holder.setItemAmount("Allocated Amount: Php" + model.getAmount());
+                holder.setItemAmount("Allocated Amount: Php"+ model.getAmount());
                 holder.setDate("On: "+model.getDate());
-                holder.setItemName("Item is: "+model.getItem());
+                holder.setItemName("Budget Item: "+model.getItem());
 
+                holder.myView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        post_key = getRef(position).getKey();
+                        item = model.getItem();
+                        amount = model.getAmount();
+                        updateData();
+                    }
+                });
 
             }
+
 
             @NonNull
             @Override
@@ -197,6 +211,10 @@ public class WishlistActivity extends AppCompatActivity {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.retrieve_layout, parent, false);
                 return new MyViewHolder(view);
             }
+
+
+
+
         };
 
         recyclerView.setAdapter(adapter);
@@ -235,6 +253,80 @@ public class WishlistActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    private void updateData(){
+        AlertDialog.Builder myDialog = new AlertDialog.Builder(this);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View mView = inflater.inflate(R.layout.update_layout, null);
+
+        myDialog.setView(mView);
+        final AlertDialog dialog = myDialog.create();
+        final TextView mItem = mView.findViewById(R.id.itemName);
+        final EditText mAmount = mView.findViewById(R.id.amount);
+        final EditText mNotes = mView.findViewById(R.id.note);
+
+        mAmount.setVisibility(View.GONE);
+
+        mItem.setText(item);
+        mAmount.setText(String.valueOf(amount));
+        mAmount.setSelection(String.valueOf(amount).length());
+
+        Button delBtn = mView.findViewById(R.id.deleteBtn);
+        Button upBtn = mView.findViewById(R.id.updateBtn);
+
+        upBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                amount = Integer.parseInt(mAmount.getText().toString());
+
+                DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+                Calendar cal = Calendar.getInstance();
+                String date = dateFormat.format(cal.getTime());
+
+                MutableDateTime epoch = new MutableDateTime();
+                epoch.setDate(0);
+                DateTime now = new DateTime();
+                Months months = Months.monthsBetween(epoch, now);
+
+                Data data = new Data(item, date, post_key, null, amount, months.getMonths());
+                wishlistRef.child(post_key).setValue(data).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()){
+                            Toast.makeText(WishlistActivity.this, "Wishlist Item was Updated Successfully", Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(WishlistActivity.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+                dialog.dismiss();
+
+            }
+        });
+
+        delBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                wishlistRef.child(post_key).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()){
+                            Toast.makeText(WishlistActivity.this, "Wishlist Item was Deleted Successfully", Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(WishlistActivity.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                dialog.dismiss();
+
+            }
+        });
+
+
+
+        dialog.show();
     }
 
 }
