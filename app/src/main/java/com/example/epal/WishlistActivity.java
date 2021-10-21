@@ -243,7 +243,7 @@ public class WishlistActivity extends AppCompatActivity {
             item.setText(itemName);
         }
 
-        public void setItemAmount (String itemAmount){
+        public void setItemAmount(String itemAmount){
             TextView amount = myView.findViewById(R.id.itmPrice);
             amount.setText(itemAmount);
         }
