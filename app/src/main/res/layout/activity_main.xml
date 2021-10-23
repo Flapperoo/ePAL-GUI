@@ -65,56 +65,20 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinator"
         android:layout_width="match_parent"
-        android:layout_height="528dp"
+        android:layout_height="226dp"
         android:layout_below="@+id/table"
         android:layout_marginTop="27dp">
 
         <GridLayout
             android:id="@+id/gridLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="364dp"
+            android:layout_height="191dp"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="20dp"
-            android:columnCount="2"
-            android:rowCount="2">
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/savingsCardView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="0"
-                android:layout_rowWeight="1"
-                android:layout_column="0"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill"
-                android:layout_margin="8dp"
-                android:background="#ffff">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical|center_horizontal"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:src="@drawable/savings1" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="10dp"
-                        android:text="SAVINGS"
-                        android:textAlignment="center"
-                        android:textColor="#000"
-                        android:textSize="20dp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            android:columnCount="3"
+            android:rowCount="1">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/expensesCardView"
@@ -136,8 +100,8 @@
                     android:orientation="vertical">
 
                     <ImageView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="82dp"
                         android:src="@drawable/expenses1" />
 
                     <TextView
@@ -156,7 +120,7 @@
                 android:id="@+id/wishlistCardView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_row="1"
+                android:layout_row="0"
                 android:layout_rowWeight="1"
                 android:layout_column="0"
                 android:layout_columnWeight="1"
@@ -192,9 +156,9 @@
                 android:id="@+id/exitCardView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_row="1"
+                android:layout_row="0"
                 android:layout_rowWeight="1"
-                android:layout_column="1"
+                android:layout_column="2"
                 android:layout_columnWeight="1"
                 android:layout_gravity="fill"
                 android:layout_margin="8dp"
@@ -209,7 +173,7 @@
 
                     <ImageView
                         android:layout_width="80dp"
-                        android:layout_height="80dp"
+                        android:layout_height="86dp"
                         android:src="@drawable/logout1" />
 
                     <TextView
@@ -227,6 +191,63 @@
 
         </GridLayout>
 
+
+
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <!--Take note of the id names -->
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinator2"
+        android:layout_width="match_parent"
+        android:layout_height="296dp"
+        android:layout_below="@id/coordinator"
+        android:layout_marginTop="5dp">
+
+        <TableLayout
+            android:id="@+id/savingsTable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/coordinator"
+            android:paddingHorizontal="10dp">
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/borders"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="Savings"
+                    android:textColor="#000"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </TableRow>
+        </TableLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewSavings"
+            android:layout_width="match_parent"
+            android:layout_height="265dp"
+            android:layout_marginTop="35dp" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabMain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom|end"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="7dp"
+            android:layout_marginBottom="7dp"
+            android:backgroundTint="@color/white"
+            android:src="@drawable/ic_add"
+            app:fabSize="normal" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
