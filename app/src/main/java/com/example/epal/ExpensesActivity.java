@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -74,7 +75,7 @@ public class ExpensesActivity extends AppCompatActivity {
                 for (DataSnapshot snap: snapshot.getChildren()){
                     ExpenseData data = snap.getValue(ExpenseData.class);
                     totalAmtExp += data.getExpAmount();
-                    String TotalE = String.valueOf("Total Expenses: Php" + totalAmtExp);
+                    String TotalE = String.valueOf("Total Expenses: Php " + totalAmtExp);
                     expensesProgress.setText(TotalE);
                 }
             }
@@ -181,9 +182,9 @@ public class ExpensesActivity extends AppCompatActivity {
 
         FirebaseRecyclerAdapter<ExpenseData, MyViewHolder> adapter = new FirebaseRecyclerAdapter<ExpenseData, MyViewHolder>(options) {
             @Override
-            protected void onBindViewHolder(@NonNull MyViewHolder holder, int position, @NonNull ExpenseData model) {
-                holder.setItemAmount("Allocated Amount: Php"+ model.getExpAmount());
-                holder.setDate("On: "+model.getExpDate());
+            protected void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position, @NonNull ExpenseData model) {
+                holder.setItemAmount("Allocated Amount: Php "+ model.getExpAmount());
+                holder.setDate("Added On: "+model.getExpDate());
                 holder.setItemName("Budget Item: "+model.getExpItem());
 
                 holder.myView.setOnClickListener(new View.OnClickListener() {

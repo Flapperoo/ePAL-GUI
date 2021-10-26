@@ -54,7 +54,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Current Savings"
+                android:text="Monthly Savings"
                 android:textColor="#ffff"
                 android:gravity="center"
                 android:textStyle="bold"
@@ -220,7 +220,7 @@
                     android:background="@drawable/borders"
                     android:gravity="center"
                     android:padding="5dp"
-                    android:text="Savings"
+                    android:text="Earnings"
                     android:textColor="#000"
                     android:textSize="16sp"
                     android:textStyle="bold" />

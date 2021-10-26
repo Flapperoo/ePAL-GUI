@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
                     password.setError("Password is required");
                 }
                 else{
-                    progressDialog.setMessage("Login in Progress");
+                    progressDialog.setMessage("Logging in...");
                     progressDialog.setCanceledOnTouchOutside(false);
                     progressDialog.show();
 

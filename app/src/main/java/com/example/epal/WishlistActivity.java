@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.Layout;
@@ -19,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -53,7 +56,7 @@ public class WishlistActivity extends AppCompatActivity {
     private String post_key = "";
     private String item = "";
     private int amount = 0;
-
+    int totalMonthSavings = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +74,41 @@ public class WishlistActivity extends AppCompatActivity {
         linearLayoutManager.setReverseLayout(true);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
+        DatabaseReference savingsRef = FirebaseDatabase.getInstance().getReference().child("savings").child(mAuth.getCurrentUser().getUid());
+        DatabaseReference expensesRef = FirebaseDatabase.getInstance().getReference().child("expenses").child(mAuth.getCurrentUser().getUid());
+        savingsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int totalAmt = 0;
+                for (DataSnapshot snap: snapshot.getChildren()){
+                    SavingsData data = snap.getValue(SavingsData.class);
+                    totalAmt += data.getSavingsAmt();
+                }
+                totalMonthSavings = totalAmt;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        expensesRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int totalAmtExp = 0;
+                for (DataSnapshot snap: snapshot.getChildren()){
+                    ExpenseData data = snap.getValue(ExpenseData.class);
+                    totalAmtExp += data.getExpAmount();
+                }
+                totalMonthSavings = totalMonthSavings - totalAmtExp;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         wishlistRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -79,7 +117,7 @@ public class WishlistActivity extends AppCompatActivity {
                 for (DataSnapshot snap: snapshot.getChildren()){
                     Data data = snap.getValue(Data.class);
                     totalAmt += data.getAmount();
-                    String TotalW = String.valueOf("Total Savings: Php" + totalAmt);
+                    String TotalW = String.valueOf("Total Costs: Php " + totalAmt);
                     savingsProgress.setText(TotalW);
                 }
             }
@@ -101,6 +139,8 @@ public class WishlistActivity extends AppCompatActivity {
             }
 
         });
+
+
 
     }
 
@@ -187,10 +227,16 @@ public class WishlistActivity extends AppCompatActivity {
 
         FirebaseRecyclerAdapter<Data, MyViewHolder> adapter = new FirebaseRecyclerAdapter<Data, MyViewHolder>(options) {
             @Override
-            protected void onBindViewHolder(@NonNull MyViewHolder holder, int position, @NonNull Data model) {
-                holder.setItemAmount("Allocated Amount: Php"+ model.getAmount());
-                holder.setDate("On: "+model.getDate());
+            protected void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position, @NonNull Data model) {
+                holder.setItemAmount("Allocated Amount: Php "+ model.getAmount());
+                holder.setDate("Added On: "+model.getDate());
                 holder.setItemName("Budget Item: "+model.getItem());
+
+                if(totalMonthSavings > model.getAmount()){
+                    holder.setItmProgress("Can Afford: Yes");
+                }else{
+                    holder.setItmProgress("Can Afford: No");
+                }
 
                 holder.myView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -253,6 +299,11 @@ public class WishlistActivity extends AppCompatActivity {
 
             TextView date = myView.findViewById(R.id.itmDate);
             date.setText(itemDate);
+        }
+
+        public void setItmProgress (String itmProgress){
+            TextView progress = myView.findViewById(R.id.itmProgress);
+            progress.setText(itmProgress);
         }
 
 

@@ -13,9 +13,11 @@
         android:theme="@style/Theme.EPAL">
         <activity
             android:name=".ExpensesActivity"
+            android:parentActivityName=".MainActivity"
             android:exported="true" />
         <activity
             android:name=".WishlistActivity"
+            android:parentActivityName=".MainActivity"
             android:exported="true" />
         <activity
             android:name=".MainActivity"

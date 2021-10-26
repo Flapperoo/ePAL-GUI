@@ -7,6 +7,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -41,6 +42,8 @@ import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
+    private DatabaseReference expensesRef;
+    private int totalMonthSavings = 0;
     private TextView mainProgress;
     private RecyclerView recyclerViewSavings;
     private CardView wishlistCardView;
@@ -60,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         savingsRef = FirebaseDatabase.getInstance().getReference().child("savings").child(mAuth.getCurrentUser().getUid());
+        expensesRef = FirebaseDatabase.getInstance().getReference().child("expenses").child(mAuth.getCurrentUser().getUid());
         loader = new ProgressDialog(this);
         mainProgress = findViewById(R.id.mainProgress);
         recyclerViewSavings = findViewById(R.id.recyclerViewSavings);
@@ -75,13 +79,31 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 int totalAmt = 0;
-
                 for (DataSnapshot snap: snapshot.getChildren()){
                     SavingsData data = snap.getValue(SavingsData.class);
                     totalAmt += data.getSavingsAmt();
-                    String totalS = String.valueOf("Php."+totalAmt);
-                    mainProgress.setText(totalS);
+
                 }
+                totalMonthSavings = totalAmt;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        expensesRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int totalAmtExp = 0;
+                for (DataSnapshot snap: snapshot.getChildren()){
+                    ExpenseData data = snap.getValue(ExpenseData.class);
+                    totalAmtExp += data.getExpAmount();
+                }
+                totalMonthSavings = totalMonthSavings - totalAmtExp;
+                String totalS = String.valueOf("Php "+totalMonthSavings);
+                mainProgress.setText(totalS);
             }
 
             @Override
@@ -117,6 +139,48 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        savingsRef = FirebaseDatabase.getInstance().getReference().child("savings").child(mAuth.getCurrentUser().getUid());
+        expensesRef = FirebaseDatabase.getInstance().getReference().child("expenses").child(mAuth.getCurrentUser().getUid());
+        savingsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int totalAmt = 0;
+                for (DataSnapshot snap: snapshot.getChildren()){
+                    SavingsData data = snap.getValue(SavingsData.class);
+                    totalAmt += data.getSavingsAmt();
+                }
+                totalMonthSavings = totalAmt;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        expensesRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int totalAmtExp = 0;
+                for (DataSnapshot snap: snapshot.getChildren()){
+                    ExpenseData data = snap.getValue(ExpenseData.class);
+                    totalAmtExp += data.getExpAmount();
+                }
+                totalMonthSavings = totalMonthSavings - totalAmtExp;
+                String totalS = String.valueOf("Php "+totalMonthSavings);
+                mainProgress.setText(totalS);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void additem() {
@@ -161,6 +225,43 @@ public class MainActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()){
                                 Toast.makeText(MainActivity.this, "Savings Amount Added Successfully", Toast.LENGTH_SHORT).show();
+                                savingsRef = FirebaseDatabase.getInstance().getReference().child("savings").child(mAuth.getCurrentUser().getUid());
+                                expensesRef = FirebaseDatabase.getInstance().getReference().child("expenses").child(mAuth.getCurrentUser().getUid());
+                                savingsRef.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        int totalAmt = 0;
+                                        for (DataSnapshot snap: snapshot.getChildren()){
+                                            SavingsData data = snap.getValue(SavingsData.class);
+                                            totalAmt += data.getSavingsAmt();
+                                        }
+                                        totalMonthSavings = totalAmt;
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+
+                                expensesRef.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        int totalAmtExp = 0;
+                                        for (DataSnapshot snap: snapshot.getChildren()){
+                                            ExpenseData data = snap.getValue(ExpenseData.class);
+                                            totalAmtExp += data.getExpAmount();
+                                        }
+                                        totalMonthSavings = totalMonthSavings - totalAmtExp;
+                                        String totalS = String.valueOf("Php "+totalMonthSavings);
+                                        mainProgress.setText(totalS);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
                             }else{
                                 Toast.makeText(MainActivity.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
                             }
@@ -192,10 +293,10 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseRecyclerAdapter<SavingsData, MyViewHolder> adapter = new FirebaseRecyclerAdapter<SavingsData, MyViewHolder>(options) {
             @Override
-            protected void onBindViewHolder(@NonNull MyViewHolder holder, int position, @NonNull SavingsData model) {
+            protected void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position, @NonNull SavingsData model) {
 
-                holder.setItemAmount("Allocated Amount: Php"+model.getSavingsAmt());
-                holder.setDate("On: "+model.getSavDate());
+                holder.setItemAmount("Allocated Amount: Php "+model.getSavingsAmt());
+                holder.setDate("Added On: "+model.getSavDate());
 
                 holder.myView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -289,6 +390,43 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()){
                             Toast.makeText(MainActivity.this, "Updated Successfully", Toast.LENGTH_SHORT).show();
+                            savingsRef = FirebaseDatabase.getInstance().getReference().child("savings").child(mAuth.getCurrentUser().getUid());
+                            expensesRef = FirebaseDatabase.getInstance().getReference().child("expenses").child(mAuth.getCurrentUser().getUid());
+                            savingsRef.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    int totalAmt = 0;
+                                    for (DataSnapshot snap: snapshot.getChildren()){
+                                        SavingsData data = snap.getValue(SavingsData.class);
+                                        totalAmt += data.getSavingsAmt();
+                                    }
+                                    totalMonthSavings = totalAmt;
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+
+                            expensesRef.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    int totalAmtExp = 0;
+                                    for (DataSnapshot snap: snapshot.getChildren()){
+                                        ExpenseData data = snap.getValue(ExpenseData.class);
+                                        totalAmtExp += data.getExpAmount();
+                                    }
+                                    totalMonthSavings = totalMonthSavings - totalAmtExp;
+                                    String totalS = String.valueOf("Php "+totalMonthSavings);
+                                    mainProgress.setText(totalS);
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
                         }else{
                             Toast.makeText(MainActivity.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
                         }
@@ -307,6 +445,43 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()){
                             Toast.makeText(MainActivity.this, "Deleted Successfully", Toast.LENGTH_SHORT).show();
+                            savingsRef = FirebaseDatabase.getInstance().getReference().child("savings").child(mAuth.getCurrentUser().getUid());
+                            expensesRef = FirebaseDatabase.getInstance().getReference().child("expenses").child(mAuth.getCurrentUser().getUid());
+                            savingsRef.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    int totalAmt = 0;
+                                    for (DataSnapshot snap: snapshot.getChildren()){
+                                        SavingsData data = snap.getValue(SavingsData.class);
+                                        totalAmt += data.getSavingsAmt();
+                                    }
+                                    totalMonthSavings = totalAmt;
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+
+                            expensesRef.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    int totalAmtExp = 0;
+                                    for (DataSnapshot snap: snapshot.getChildren()){
+                                        ExpenseData data = snap.getValue(ExpenseData.class);
+                                        totalAmtExp += data.getExpAmount();
+                                    }
+                                    totalMonthSavings = totalMonthSavings - totalAmtExp;
+                                    String totalS = String.valueOf("Php "+totalMonthSavings);
+                                    mainProgress.setText(totalS);
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
                         }else{
                             Toast.makeText(MainActivity.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
                         }
