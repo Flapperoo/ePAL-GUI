@@ -228,13 +228,14 @@ public class WishlistActivity extends AppCompatActivity {
         View myView;
 
         public ImageView imageView;
-        public TextView itmProgress;
+        public TextView itmProgress, date;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             myView = itemView;
             imageView = itemView.findViewById(R.id.imageView);
             itmProgress = itemView.findViewById(R.id.itmProgress);
+            date = itemView.findViewById(R.id.itmDate);
 
         }
 
@@ -249,7 +250,9 @@ public class WishlistActivity extends AppCompatActivity {
         }
 
         public void setDate (String itemDate){
+
             TextView date = myView.findViewById(R.id.itmDate);
+            date.setText(itemDate);
         }
 
 

@@ -289,13 +289,14 @@ public class ExpensesActivity extends AppCompatActivity {
         View myView;
 
         public ImageView imageView;
-        public TextView itmProgress;
+        public TextView itmProgress, expitmDate;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             myView = itemView;
             imageView = itemView.findViewById(R.id.imageView);
             itmProgress = itemView.findViewById(R.id.itmProgress);
+            expitmDate = itemView.findViewById(R.id.expitmDate);
 
         }
 
@@ -311,6 +312,7 @@ public class ExpensesActivity extends AppCompatActivity {
 
         public void setDate (String itemDate){
             TextView date = myView.findViewById(R.id.expitmDate);
+            date.setText(itemDate);
         }
 
 

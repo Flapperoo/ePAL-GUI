@@ -49,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference savingsRef;
     private FirebaseAuth mAuth;
     private ProgressDialog loader;
+    private String post_key = "";
+    private String SaveItem = "";
+    private int SaveAmt = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
                 for (DataSnapshot snap: snapshot.getChildren()){
                     SavingsData data = snap.getValue(SavingsData.class);
                     totalAmt += data.getSavingsAmt();
-                    String totalS = String.valueOf("Total Savings: Php"+totalAmt);
+                    String totalS = String.valueOf("Php."+totalAmt);
                     mainProgress.setText(totalS);
                 }
             }
@@ -194,7 +197,17 @@ public class MainActivity extends AppCompatActivity {
                 holder.setItemAmount("Allocated Amount: Php"+model.getSavingsAmt());
                 holder.setDate("On: "+model.getSavDate());
 
+                holder.myView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        post_key = getRef(position).getKey();
+                        SaveAmt = model.getSavingsAmt();
+                        updateData();
+                    }
+                });
             }
+
+
 
             @NonNull
             @Override
@@ -214,14 +227,15 @@ public class MainActivity extends AppCompatActivity {
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
         View myView;
-        public TextView notes;
+        public TextView notes, date;
+
 
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             myView = itemView;
             notes = itemView.findViewById(R.id.saveNotes);
-
+            date = itemView.findViewById(R.id.SaveItemDate);
 
         }
 
@@ -231,8 +245,80 @@ public class MainActivity extends AppCompatActivity {
         }
         public void setDate (String itemDate){
             TextView date = myView.findViewById(R.id.SaveItemDate);
+            date.setText(itemDate);
         }
-    }
 
+    }
+    private void updateData(){
+        AlertDialog.Builder myDialog = new AlertDialog.Builder(this);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View mView = inflater.inflate(R.layout.main_update_layout, null);
+
+        myDialog.setView(mView);
+        final AlertDialog dialog = myDialog.create();
+
+        final EditText mAmount = mView.findViewById(R.id.SavAmount);
+        final EditText mNotes = mView.findViewById(R.id.savNotes);
+
+        mNotes.setVisibility(View.GONE);
+
+        mAmount.setText(String.valueOf(SaveAmt));
+        mAmount.setSelection(String.valueOf(SaveAmt).length());
+
+        Button SavDelBtn = mView.findViewById(R.id.SavingsDelBtn);
+        Button SaveUpBtn = mView.findViewById(R.id.SavingsUpBtn);
+
+        SaveUpBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                SaveAmt = Integer.parseInt(mAmount.getText().toString());
+
+                DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                Calendar cal = Calendar.getInstance();
+                String savDate = dateFormat.format(cal.getTime());
+
+                MutableDateTime epoch = new MutableDateTime();
+                epoch.setDate(0);
+                DateTime now = new DateTime();
+                Months months = Months.monthsBetween(epoch, now);
+
+                SavingsData data = new SavingsData(savDate, post_key, null, SaveAmt, months.getMonths());
+                savingsRef.child(post_key).setValue(data).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()){
+                            Toast.makeText(MainActivity.this, "Updated Successfully", Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(MainActivity.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
+
+                dialog.dismiss();
+            }
+        });
+        SavDelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                savingsRef.child(post_key).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()){
+                            Toast.makeText(MainActivity.this, "Deleted Successfully", Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(MainActivity.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+
+    }
 
 }

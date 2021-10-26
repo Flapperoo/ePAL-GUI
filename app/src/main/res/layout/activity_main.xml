@@ -46,7 +46,7 @@
                 android:textColor="#ffff"
                 android:gravity="center"
                 android:textStyle="bold"
-                android:textSize="50sp"/>
+                android:textSize="40sp"/>
         </TableRow>
         <TableRow>
             <TextView
