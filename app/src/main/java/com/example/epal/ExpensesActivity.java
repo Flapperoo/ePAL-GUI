@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -15,7 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +44,7 @@ import java.util.Calendar;
 
 public class ExpensesActivity extends AppCompatActivity {
 
+    private ImageButton backBtnExp;
     private TextView expensesProgress;
     private RecyclerView recyclerViewExp;
     private FloatingActionButton fabExp;
@@ -56,11 +60,21 @@ public class ExpensesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expenses);
 
+
         mAuth = FirebaseAuth.getInstance();
         expensesRef = FirebaseDatabase.getInstance().getReference().child("expenses").child(mAuth.getCurrentUser().getUid());
         loader = new ProgressDialog(this);
         expensesProgress = findViewById(R.id.expensesProgress);
         recyclerViewExp = findViewById(R.id.recyclerViewExp);
+
+        backBtnExp = (ImageButton)findViewById(R.id.backBtnExp);
+        backBtnExp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ExpensesActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setStackFromEnd(true);

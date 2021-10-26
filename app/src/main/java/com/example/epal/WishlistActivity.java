@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.text.Layout;
 import android.text.TextUtils;
@@ -17,8 +19,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -47,6 +52,7 @@ import java.util.Calendar;
 
 public class WishlistActivity extends AppCompatActivity {
 
+    private ImageButton backBtnWish;
     private TextView savingsProgress;
     private RecyclerView recyclerView;
     private FloatingActionButton fab;
@@ -63,11 +69,21 @@ public class WishlistActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wishlist);
 
+
         mAuth = FirebaseAuth.getInstance();
         wishlistRef = FirebaseDatabase.getInstance().getReference().child("wishlist").child(mAuth.getCurrentUser().getUid());
         loader = new ProgressDialog(this);
         savingsProgress = findViewById(R.id.savingsProgress);
         recyclerView = findViewById(R.id.recyclerView);
+
+        backBtnWish = (ImageButton)findViewById(R.id.backBtnWish);
+        backBtnWish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(WishlistActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setStackFromEnd(true);
@@ -143,6 +159,8 @@ public class WishlistActivity extends AppCompatActivity {
 
 
     }
+
+
 
     private void additem(){
         AlertDialog.Builder myDialog = new AlertDialog.Builder(this);
@@ -268,6 +286,8 @@ public class WishlistActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
 
     }
+
+
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
 

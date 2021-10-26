@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +44,7 @@ import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
+    private ImageButton mainExitBtn;
     private DatabaseReference expensesRef;
     private int totalMonthSavings = 0;
     private TextView mainProgress;
@@ -61,12 +64,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         mAuth = FirebaseAuth.getInstance();
         savingsRef = FirebaseDatabase.getInstance().getReference().child("savings").child(mAuth.getCurrentUser().getUid());
         expensesRef = FirebaseDatabase.getInstance().getReference().child("expenses").child(mAuth.getCurrentUser().getUid());
         loader = new ProgressDialog(this);
         mainProgress = findViewById(R.id.mainProgress);
         recyclerViewSavings = findViewById(R.id.recyclerViewSavings);
+
+        mainExitBtn = (ImageButton)findViewById(R.id.mainExitBtn);
+        mainExitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
+            }
+        });
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setStackFromEnd(true);

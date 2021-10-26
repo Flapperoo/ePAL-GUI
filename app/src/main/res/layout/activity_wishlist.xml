@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/R_LayoutWish"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -78,6 +79,13 @@
             android:backgroundTint="@color/white"
             android:src="@drawable/ic_add"
             app:fabSize="normal" />
+
+        <ImageButton
+            android:id="@+id/backBtnWish"
+            android:layout_width="56dp"
+            android:layout_height="63dp"
+            android:background="#008037"
+            android:src="@drawable/backwhitebtn" />
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
