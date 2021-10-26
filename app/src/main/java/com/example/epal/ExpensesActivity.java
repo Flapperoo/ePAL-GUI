@@ -241,7 +241,7 @@ public class ExpensesActivity extends AppCompatActivity {
         final AlertDialog dialog = myDialog.create();
         final TextView mItem = mView.findViewById(R.id.expitemName);
         final EditText mAmount = mView.findViewById(R.id.expamount);
-        final EditText mNotes = mView.findViewById(R.id.expitmNotes);
+        final EditText mNotes = mView.findViewById(R.id.expnote);
 
         mNotes.setVisibility(View.VISIBLE);
 
