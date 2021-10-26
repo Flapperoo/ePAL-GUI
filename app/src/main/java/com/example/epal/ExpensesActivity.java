@@ -54,6 +54,7 @@ public class ExpensesActivity extends AppCompatActivity {
     private String post_key = "";
     private String expenseitem = "";
     private int expamount = 0;
+    private String expNotes = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +126,7 @@ public class ExpensesActivity extends AppCompatActivity {
 
         final EditText linkTxtExp = myview.findViewById(R.id.linkTxtExp);
         final EditText priceTxtExp = myview.findViewById(R.id.priceTxtExp);
+        final EditText notesTxtExp = myview.findViewById(R.id.notesTxtExp);
         final Button cancelExpBtn = myview.findViewById(R.id.cancelExpBtn);
         final Button saveExpBtn = myview.findViewById(R.id.saveExpBtn);
 
@@ -134,6 +136,7 @@ public class ExpensesActivity extends AppCompatActivity {
 
                 String expItem = linkTxtExp.getText().toString();
                 String itemAmount = priceTxtExp.getText().toString();
+                String expNotes = notesTxtExp.getText().toString();
 
                 if(TextUtils.isEmpty(expItem)){
                     linkTxtExp.setError("Please input Item:");
@@ -159,7 +162,8 @@ public class ExpensesActivity extends AppCompatActivity {
                     DateTime now = new DateTime();
                     Months months = Months.monthsBetween(epoch, now);
 
-                    ExpenseData data = new ExpenseData(expItem, expDate, expId, null, Integer.parseInt(itemAmount), months.getMonths());
+
+                    ExpenseData data = new ExpenseData(expItem, expDate, expId, expNotes, Integer.parseInt(itemAmount), months.getMonths());
                     expensesRef.child(expId).setValue(data).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
@@ -197,9 +201,10 @@ public class ExpensesActivity extends AppCompatActivity {
         FirebaseRecyclerAdapter<ExpenseData, MyViewHolder> adapter = new FirebaseRecyclerAdapter<ExpenseData, MyViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position, @NonNull ExpenseData model) {
-                holder.setItemAmount("Allocated Amount: Php "+ model.getExpAmount());
-                holder.setDate("Added On: "+model.getExpDate());
-                holder.setItemName("Budget Item: "+model.getExpItem());
+                holder.setItemAmount("Item Price: Php "+ model.getExpAmount());
+                holder.setDate("Date Added: "+model.getExpDate());
+                holder.setItemName("Item Name: "+model.getExpItem());
+                holder.setNotes("Notes: "+model.getExpNotes());
 
                 holder.myView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -207,6 +212,7 @@ public class ExpensesActivity extends AppCompatActivity {
                         post_key = getRef(position).getKey();
                         expenseitem = model.getExpItem();
                         expamount = model.getExpAmount();
+                        expNotes = model.getExpNotes();
                         updateData();
                     }
                 });
@@ -235,7 +241,9 @@ public class ExpensesActivity extends AppCompatActivity {
         final AlertDialog dialog = myDialog.create();
         final TextView mItem = mView.findViewById(R.id.expitemName);
         final EditText mAmount = mView.findViewById(R.id.expamount);
-        final EditText mNotes = mView.findViewById(R.id.note);
+        final EditText mNotes = mView.findViewById(R.id.expitmNotes);
+
+        mNotes.setVisibility(View.VISIBLE);
 
         mItem.setText(expenseitem);
         mAmount.setText(String.valueOf(expamount));
@@ -248,6 +256,7 @@ public class ExpensesActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 expamount = Integer.parseInt(mAmount.getText().toString());
+                expNotes = mNotes.getText().toString();
 
                 DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
                 Calendar cal = Calendar.getInstance();
@@ -258,7 +267,7 @@ public class ExpensesActivity extends AppCompatActivity {
                 DateTime now = new DateTime();
                 Months months = Months.monthsBetween(epoch, now);
 
-                ExpenseData data = new ExpenseData(expenseitem, expDate, post_key, null, expamount, months.getMonths());
+                ExpenseData data = new ExpenseData(expenseitem, expDate, post_key, expNotes, expamount, months.getMonths());
                 expensesRef.child(post_key).setValue(data).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -304,7 +313,7 @@ public class ExpensesActivity extends AppCompatActivity {
         View myView;
 
         public ImageView imageView;
-        public TextView itmProgress, expitmDate;
+        public TextView itmProgress, expitmDate, expitmNotes;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -312,6 +321,7 @@ public class ExpensesActivity extends AppCompatActivity {
             imageView = itemView.findViewById(R.id.imageView);
             itmProgress = itemView.findViewById(R.id.itmProgress);
             expitmDate = itemView.findViewById(R.id.expitmDate);
+            expitmNotes = itemView.findViewById(R.id.expitmNotes);
 
         }
 
@@ -329,6 +339,12 @@ public class ExpensesActivity extends AppCompatActivity {
             TextView date = myView.findViewById(R.id.expitmDate);
             date.setText(itemDate);
         }
+
+        public void setNotes (String SavNotes){
+            TextView notes = myView.findViewById(R.id.expitmNotes);
+            notes.setText(SavNotes);
+        }
+
 
 
     }

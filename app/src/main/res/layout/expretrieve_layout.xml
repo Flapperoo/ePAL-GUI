@@ -42,18 +42,19 @@
                 android:textColor="#000"
                 android:textSize="18dp"
                 android:id="@+id/expitmDate"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Notes: "
+                android:textStyle="bold"
+                android:textColor="#000"
+                android:textSize="18dp"
+                android:id="@+id/expitmNotes"/>
 
 
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_margin="10dp"
-            android:layout_toEndOf="@+id/linearLayout">
 
-        </ImageView>
 
     </RelativeLayout>
 

@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private String post_key = "";
     private String SaveItem = "";
     private int SaveAmt = 0;
+    private String SaveNotes = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -214,13 +215,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String itemAmount = amtTxt.getText().toString();
-                String itemNotes = notes.getText().toString();
+                String savNotes = notes.getText().toString();
 
                 if(TextUtils.isEmpty(itemAmount)){
                     amtTxt.setError("Please input amount:");
                     return;
                 }
-                if(TextUtils.isEmpty(itemNotes)){
+                if(TextUtils.isEmpty(savNotes)){
                     notes.setError("Please input note:");
                     return;
                 }else{
@@ -238,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
                     DateTime now = new DateTime();
                     Months months = Months.monthsBetween(epoch, now);
 
-                    SavingsData data = new SavingsData(savDate, savId, null, Integer.parseInt(itemAmount), months.getMonths());
+                    SavingsData data = new SavingsData(savDate, savId, savNotes, Integer.parseInt(itemAmount), months.getMonths());
                     savingsRef.child(savId).setValue(data).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
@@ -314,14 +315,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position, @NonNull SavingsData model) {
 
-                holder.setItemAmount("Allocated Amount: Php "+model.getSavingsAmt());
+                holder.setItemAmount("Amount: Php "+model.getSavingsAmt());
                 holder.setDate("Added On: "+model.getSavDate());
-
+                holder.setNotes("Note: "+model.getSavNotes());
                 holder.myView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         post_key = getRef(position).getKey();
                         SaveAmt = model.getSavingsAmt();
+                        SaveNotes = model.getSavNotes();
                         updateData();
                     }
                 });
@@ -368,6 +370,10 @@ public class MainActivity extends AppCompatActivity {
             date.setText(itemDate);
         }
 
+        public void setNotes (String SavNotes){
+            TextView notes = myView.findViewById(R.id.saveNotes);
+            notes.setText(SavNotes);
+        }
     }
     private void updateData(){
         AlertDialog.Builder myDialog = new AlertDialog.Builder(this);
@@ -385,6 +391,7 @@ public class MainActivity extends AppCompatActivity {
         mAmount.setText(String.valueOf(SaveAmt));
         mAmount.setSelection(String.valueOf(SaveAmt).length());
 
+
         Button SavDelBtn = mView.findViewById(R.id.SavingsDelBtn);
         Button SaveUpBtn = mView.findViewById(R.id.SavingsUpBtn);
 
@@ -393,6 +400,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 SaveAmt = Integer.parseInt(mAmount.getText().toString());
+                SaveNotes = mNotes.getText().toString();
 
                 DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
                 Calendar cal = Calendar.getInstance();
@@ -403,7 +411,7 @@ public class MainActivity extends AppCompatActivity {
                 DateTime now = new DateTime();
                 Months months = Months.monthsBetween(epoch, now);
 
-                SavingsData data = new SavingsData(savDate, post_key, null, SaveAmt, months.getMonths());
+                SavingsData data = new SavingsData(savDate, post_key, SaveNotes, SaveAmt, months.getMonths());
                 savingsRef.child(post_key).setValue(data).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {

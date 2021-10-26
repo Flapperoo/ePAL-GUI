@@ -246,9 +246,9 @@ public class WishlistActivity extends AppCompatActivity {
         FirebaseRecyclerAdapter<Data, MyViewHolder> adapter = new FirebaseRecyclerAdapter<Data, MyViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position, @NonNull Data model) {
-                holder.setItemAmount("Allocated Amount: Php "+ model.getAmount());
+                holder.setItemAmount("Item Price: Php "+ model.getAmount());
                 holder.setDate("Added On: "+model.getDate());
-                holder.setItemName("Budget Item: "+model.getItem());
+                holder.setItemName("Item Name: "+model.getItem());
 
                 if(totalMonthSavings > model.getAmount()){
                     holder.setItmProgress("Can Afford: Yes");
