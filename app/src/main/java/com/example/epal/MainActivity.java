@@ -206,6 +206,7 @@ public class MainActivity extends AppCompatActivity {
         dialog.setCancelable(false);
 
         final EditText amtTxt = myView.findViewById(R.id.amtTxt);
+        final EditText notes = myView.findViewById(R.id.noteTxt);
         final Button mainCancel = myView.findViewById(R.id.mainCancel);
         final Button mainAdd = myView.findViewById(R.id.mainAdd);
 
@@ -213,9 +214,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String itemAmount = amtTxt.getText().toString();
+                String itemNotes = notes.getText().toString();
 
                 if(TextUtils.isEmpty(itemAmount)){
                     amtTxt.setError("Please input amount:");
+                    return;
+                }
+                if(TextUtils.isEmpty(itemNotes)){
+                    notes.setError("Please input note:");
                     return;
                 }else{
                     loader.setMessage("Adding Savings Amount...");
@@ -374,7 +380,7 @@ public class MainActivity extends AppCompatActivity {
         final EditText mAmount = mView.findViewById(R.id.SavAmount);
         final EditText mNotes = mView.findViewById(R.id.savNotes);
 
-        mNotes.setVisibility(View.GONE);
+        mNotes.setVisibility(View.VISIBLE);
 
         mAmount.setText(String.valueOf(SaveAmt));
         mAmount.setSelection(String.valueOf(SaveAmt).length());
